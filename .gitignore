@@ -1,0 +1,53 @@
+# General
+.DS_Store
+.idea/
+*.iml
+*.log
+
+# Backend (Java/Maven)
+movieflix-backend/target/
+movieflix-backend/.mvn/
+movieflix-backend/mvnw
+movieflix-backend/mvnw.cmd
+*.class
+*.jar
+*.war
+*.ear
+
+# Frontend (Node/React)
+movieflix-frontend/node_modules/
+movieflix-frontend/dist/
+movieflix-frontend/build/
+movieflix-frontend/.vite/
+movieflix-frontend/.env.local
+movieflix-frontend/.env.development.local
+movieflix-frontend/.env.test.local
+movieflix-frontend/.env.production.local
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+ehthumbs.db
+
+# Environment
+.env
+*.env
+!example.env
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.h2.db
+
+# Temporary files
+*.tmp
+*.temp
