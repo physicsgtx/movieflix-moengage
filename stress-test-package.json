@@ -1,0 +1,22 @@
+{
+  "name": "movieflix-stress-test",
+  "version": "1.0.0",
+  "description": "Stress testing tool for MovieFlix API",
+  "main": "stress-test.js",
+  "scripts": {
+    "test": "node stress-test.js",
+    "test:local": "API_URL=http://localhost:8080 node stress-test.js",
+    "test:production": "API_URL=https://movieflix-moengage.onrender.com node stress-test.js",
+    "test:heavy": "node stress-test.js --heavy"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "keywords": [
+    "stress-test",
+    "load-test",
+    "api-test"
+  ],
+  "author": "MovieFlix Team"
+}
+
