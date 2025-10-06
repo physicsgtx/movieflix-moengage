@@ -26,7 +26,7 @@ export default function Home() {
       {/* Netflix-Style Hero Section with Collage */}
       <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
         {/* Movie Collage Background */}
-        <div className="absolute inset-0 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 opacity-30 pointer-events-none">
+        <div className="absolute inset-0 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 opacity-30 h-full">
           {moviePosters.map((poster, index) => (
             <div
               key={index}
@@ -56,13 +56,13 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-8 lg:px-16">
             <div className="max-w-3xl pb-20 sm:pb-24">
               {/* Badge */}
-              <div className="inline-flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-full mb-6 animate-fadeIn text-sm sm:text-base shadow-lg">
-                <Film className="w-4 h-4 sm:w-5 sm:h-5" />
+              <div className="inline-flex items-center space-x-2 bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mb-4 sm:mb-6 animate-fadeIn text-sm sm:text-base">
+                <Film className="w-5 h-5" />
                 <span className="font-semibold">Unlimited Movies</span>
               </div>
 
               {/* Main Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 text-white leading-tight animate-slideUp">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 text-white leading-tight animate-slideUp">
                 Welcome to
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-pink-500 to-purple-500">
@@ -71,11 +71,11 @@ export default function Home() {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-base sm:text-lg md:text-xl mb-4 text-gray-300 animate-slideUp" style={{ animationDelay: '0.2s' }}>
+              <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-8 text-gray-300 animate-slideUp" style={{ animationDelay: '0.2s' }}>
                 Discover thousands of movies. Stream your favorites. Explore new worlds.
               </p>
 
-              <p className="text-sm sm:text-base mb-8 text-gray-400 max-w-2xl animate-slideUp" style={{ animationDelay: '0.3s' }}>
+              <p className="text-base sm:text-lg mb-6 sm:mb-10 text-gray-400 max-w-2xl animate-slideUp" style={{ animationDelay: '0.3s' }}>
                 Advanced search with powerful filters, interactive analytics dashboard, and personalized recommendations.
               </p>
 
@@ -119,18 +119,18 @@ export default function Home() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12 max-w-xl animate-slideUp" style={{ animationDelay: '0.5s' }}>
+              <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-8 sm:mt-12 animate-slideUp" style={{ animationDelay: '0.5s' }}>
                 <div className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">1000+</div>
-                  <div className="text-xs sm:text-sm text-gray-400">Movies</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white">1000+</div>
+                  <div className="text-xs sm:text-sm text-gray-400 whitespace-nowrap">Movies</div>
                 </div>
                 <div className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">50+</div>
-                  <div className="text-xs sm:text-sm text-gray-400">Genres</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white">50+</div>
+                  <div className="text-xs sm:text-sm text-gray-400 whitespace-nowrap">Genres</div>
                 </div>
                 <div className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">24/7</div>
-                  <div className="text-xs sm:text-sm text-gray-400">Access</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white">24/7</div>
+                  <div className="text-xs sm:text-sm text-gray-400 whitespace-nowrap">Access</div>
                 </div>
               </div>
             </div>
