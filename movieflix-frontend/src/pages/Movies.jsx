@@ -312,67 +312,87 @@ export default function Movies() {
             <div className="loader"></div>
           </div>
         ) : movies.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {movies.map((movie) => (
               <div
                 key={movie.imdbId}
                 onClick={() => navigate(`/movie/${movie.imdbId}`)}
-                className="movie-card group"
+                className="movie-card"
               >
-                <div className="relative overflow-hidden aspect-[2/3]">
+                {/* Movie Poster */}
+                <div className="relative aspect-[2/3]">
                   {movie.poster && movie.poster !== 'N/A' ? (
                     <img
                       src={movie.poster}
                       alt={movie.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      className="movie-card-image"
+                      loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                      <Search className="w-16 h-16 text-gray-500" />
+                    <div className="w-full h-full bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+                      <Search className="w-12 h-12 sm:w-16 sm:h-16 text-gray-600" />
                     </div>
                   )}
+                  
+                  {/* Dark Overlay on Hover */}
+                  <div className="movie-card-overlay"></div>
                   
                   {/* Admin Edit Button */}
                   {isAdmin && (
                     <button
                       onClick={(e) => handleEdit(movie, e)}
-                      className="absolute top-2 left-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all transform hover:scale-110 z-10"
+                      className="absolute top-2 left-2 p-1.5 sm:p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-lg transition-all transform hover:scale-110 z-20 opacity-0 group-hover:opacity-100"
                       title="Edit Movie"
                     >
-                      <Edit className="w-4 h-4" />
+                      <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                     </button>
                   )}
                   
+                  {/* Rating Badge */}
                   {movie.imdbRating && (
-                    <div className="absolute top-2 right-2 bg-yellow-500 text-gray-900 px-2 py-1 rounded-lg flex items-center space-x-1 font-bold">
-                      <Star className="w-4 h-4 fill-current" />
+                    <div className="movie-card-rating bg-yellow-400 text-black px-2 py-0.5 sm:py-1 rounded-md flex items-center space-x-1 font-bold text-xs sm:text-sm shadow-lg z-10">
+                      <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
                       <span>{movie.imdbRating}</span>
                     </div>
                   )}
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">
-                    {movie.title}
-                  </h3>
-                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="w-4 h-4" />
-                      <span>{movie.year}</span>
+                  
+                  {/* Info Overlay - Shows on Hover */}
+                  <div className="movie-card-info">
+                    <h3 className="font-bold text-sm sm:text-base text-white mb-1 sm:mb-2 line-clamp-2">
+                      {movie.title}
+                    </h3>
+                    
+                    <div className="flex items-center justify-between text-xs sm:text-sm text-gray-300 mb-2">
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span>{movie.year}</span>
+                      </div>
+                      {movie.runtime && (
+                        <span className="text-xs sm:text-sm">{movie.runtime} min</span>
+                      )}
                     </div>
-                    {movie.runtime && <span>{movie.runtime} min</span>}
+                    
+                    {/* Genres */}
+                    {movie.genre && movie.genre.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {movie.genre.slice(0, 3).map((genre, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-red-600/80 text-white rounded backdrop-blur-sm"
+                          >
+                            {genre}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Plot Preview */}
+                    {movie.plot && movie.plot !== 'N/A' && (
+                      <p className="text-xs text-gray-400 line-clamp-2 hidden sm:block">
+                        {movie.plot}
+                      </p>
+                    )}
                   </div>
-                  {movie.genre && (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {movie.genre.slice(0, 2).map((genre, idx) => (
-                        <span
-                          key={idx}
-                          className="text-xs px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded"
-                        >
-                          {genre}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
