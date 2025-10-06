@@ -59,7 +59,7 @@ export default function Home() {
 
             {/* Subheading */}
             <p className="text-lg sm:text-xl md:text-2xl text-white mb-4 sm:mb-6">
-              Starts at ₹149. Cancel at any time.
+              Watch anywhere. Cancel anytime. Absolutely free.
             </p>
 
             {/* Description */}
@@ -110,65 +110,74 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
-          Features
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="card p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <Search className="w-16 h-16 text-red-600" />
+      {/* Features Section - Blended with dark background */}
+      <div className="bg-gradient-to-b from-black via-gray-900 to-black py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-16 text-white">
+            Why Choose MovieFlix?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 bg-red-600/10 rounded-full">
+                  <Search className="w-12 h-12 text-red-500" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Advanced Search
+              </h3>
+              <p className="text-gray-300">
+                Search movies with powerful filters including genre, year, rating, and more
+              </p>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-              Advanced Search
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Search movies with powerful filters including genre, year, rating, and more
-            </p>
-          </div>
 
-          <div className="card p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <BarChart3 className="w-16 h-16 text-red-600" />
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 bg-red-600/10 rounded-full">
+                  <BarChart3 className="w-12 h-12 text-red-500" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Analytics Dashboard
+              </h3>
+              <p className="text-gray-300">
+                View interactive charts and statistics about movies, genres, and ratings
+              </p>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-              Analytics Dashboard
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              View interactive charts and statistics about movies, genres, and ratings
-            </p>
-          </div>
 
-          <div className="card p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <Shield className="w-16 h-16 text-red-600" />
+            <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 bg-red-600/10 rounded-full">
+                  <Shield className="w-12 h-12 text-red-500" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white">
+                Secure & Fast
+              </h3>
+              <p className="text-gray-300">
+                JWT authentication with smart caching for lightning-fast performance
+              </p>
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-              Secure & Fast
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              JWT authentication with smart caching for lightning-fast performance
-            </p>
           </div>
         </div>
       </div>
 
-      {/* CTA Section */}
+      {/* CTA Section - Blended */}
       {!token && (
-        <div className="bg-gray-100 dark:bg-gray-800 py-16">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
+        <div className="bg-gradient-to-b from-black to-gray-900 py-20">
+          <div className="container mx-auto px-4 text-center max-w-3xl">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-white">
               Ready to explore movies?
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-              Join MovieFlix today and start discovering amazing films
+            <p className="text-xl text-gray-300 mb-10">
+              Join MovieFlix today and start discovering amazing films - absolutely free!
             </p>
             <Link
               to="/register"
-              className="inline-block px-8 py-4 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all transform hover:scale-105 shadow-xl"
+              className="inline-flex items-center space-x-2 px-10 py-5 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all transform hover:scale-105 shadow-2xl text-xl"
             >
-              Create Free Account
+              <span>Create Free Account</span>
+              <ChevronRight className="w-6 h-6" />
             </Link>
           </div>
         </div>
