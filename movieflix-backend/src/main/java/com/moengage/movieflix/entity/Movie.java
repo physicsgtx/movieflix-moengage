@@ -13,7 +13,11 @@ import java.util.List;
 @Table(name = "movies", indexes = {
     @Index(name = "idx_imdb_id", columnList = "imdbId", unique = true),
     @Index(name = "idx_title", columnList = "title"),
-    @Index(name = "idx_cached_at", columnList = "cachedAt")
+    @Index(name = "idx_cached_at", columnList = "cachedAt"),
+    @Index(name = "idx_rating", columnList = "imdbRating"),
+    @Index(name = "idx_year", columnList = "release_year"),
+    @Index(name = "idx_title_year", columnList = "title, release_year"),
+    @Index(name = "idx_rating_year", columnList = "imdbRating, release_year")
 })
 @Data
 @NoArgsConstructor

@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,6 +87,7 @@ public class MovieService {
                 .build();
     }
 
+    @Cacheable(value = "movies", key = "#imdbId")
     @Transactional
     public MovieResponse getMovieById(String imdbId) {
         // Check cache first
@@ -107,7 +110,8 @@ public class MovieService {
         return MovieResponse.fromEntity(movie);
     }
 
-    @Transactional
+    @Cacheable(value = "movieStats")
+    @Transactional(readOnly = true)
     public MovieStatsResponse getMovieStats() {
         List<Movie> allMovies = movieRepository.findAll();
 
@@ -169,6 +173,7 @@ public class MovieService {
                 .build();
     }
 
+    @CacheEvict(value = {"movies", "movieStats"}, allEntries = true)
     @Transactional
     public void deleteMovie(String imdbId) {
         Movie movie = movieRepository.findByImdbId(imdbId)
@@ -177,6 +182,7 @@ public class MovieService {
         log.info("Deleted movie from cache: {}", imdbId);
     }
 
+    @CacheEvict(value = {"movies", "movieStats"}, allEntries = true)
     @Transactional
     public MovieResponse updateMovie(String imdbId, Movie updatedMovie) {
         Movie movie = movieRepository.findByImdbId(imdbId)
