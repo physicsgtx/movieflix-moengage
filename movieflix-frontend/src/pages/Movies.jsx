@@ -16,6 +16,8 @@ export default function Movies() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [allMovies, setAllMovies] = useState([])
   const [downloadingCSV, setDownloadingCSV] = useState(false)
+  const [availableGenres, setAvailableGenres] = useState([])
+  const [selectedGenres, setSelectedGenres] = useState([])
   const [pagination, setPagination] = useState({
     totalElements: 0,
     totalPages: 0,
@@ -37,6 +39,7 @@ export default function Movies() {
       const params = {
         ...filters,
         ...(searchQuery && { search: searchQuery }),
+        ...(selectedGenres.length > 0 && { genres: selectedGenres }),
       }
       const response = await movieAPI.searchMovies(params)
       const data = response.data.data
@@ -46,6 +49,15 @@ export default function Movies() {
         totalPages: data.totalPages,
         currentPage: data.currentPage,
       })
+      
+      // Extract unique genres from all movies for the filter dropdown
+      const allGenres = new Set()
+      data.movies.forEach(movie => {
+        if (movie.genre && Array.isArray(movie.genre)) {
+          movie.genre.forEach(g => allGenres.add(g))
+        }
+      })
+      setAvailableGenres([...allGenres].sort())
     } catch (error) {
       toast.error('Failed to fetch movies')
     } finally {
@@ -66,6 +78,20 @@ export default function Movies() {
 
   const handleUpdate = () => {
     fetchMovies()
+  }
+
+  const handleGenreToggle = (genre) => {
+    setSelectedGenres(prev => {
+      if (prev.includes(genre)) {
+        return prev.filter(g => g !== genre)
+      } else {
+        return [...prev, genre]
+      }
+    })
+  }
+
+  const clearGenreFilters = () => {
+    setSelectedGenres([])
   }
 
   const fetchAllMovies = async () => {
@@ -173,7 +199,7 @@ export default function Movies() {
       fetchMovies()
     }, 500)
     return () => clearTimeout(timer)
-  }, [searchQuery, filters])
+  }, [searchQuery, filters, selectedGenres])
 
   return (
     <div className="min-h-screen py-8">
@@ -313,18 +339,73 @@ export default function Movies() {
             </div>
           </div>
 
+          {/* Genre Filter - Multi-Select */}
+          <div className="mt-6">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+              Filter by Genres {selectedGenres.length > 0 && `(${selectedGenres.length} selected)`}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {availableGenres.length > 0 ? (
+                availableGenres.map((genre) => (
+                  <button
+                    key={genre}
+                    onClick={() => handleGenreToggle(genre)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all transform hover:scale-105 ${
+                      selectedGenres.includes(genre)
+                        ? 'bg-red-600 text-white shadow-lg'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {genre}
+                    {selectedGenres.includes(genre) && (
+                      <span className="ml-1.5">✓</span>
+                    )}
+                  </button>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                  No genres available. Search for movies to see genres.
+                </p>
+              )}
+            </div>
+            {selectedGenres.length > 0 && (
+              <div className="mt-3 flex items-center justify-between">
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-xs text-gray-600 dark:text-gray-400">Selected:</span>
+                  {selectedGenres.map((genre) => (
+                    <span
+                      key={genre}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded text-xs font-medium"
+                    >
+                      {genre}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  onClick={clearGenreFilters}
+                  className="text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold"
+                >
+                  Clear Genres
+                </button>
+              </div>
+            )}
+          </div>
+
           {/* Active Filters Display */}
-          {(filters.minRating > 0) && (
+          {(filters.minRating > 0 || selectedGenres.length > 0) && (
             <div className="mt-4 pt-4 border-t dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Active Filters:
+                  Active Filters: {filters.minRating > 0 && 'Rating'}{filters.minRating > 0 && selectedGenres.length > 0 && ', '}{selectedGenres.length > 0 && `${selectedGenres.length} Genre(s)`}
                 </span>
                 <button
-                  onClick={() => setFilters({ ...filters, minRating: '' })}
+                  onClick={() => {
+                    setFilters({ ...filters, minRating: '' })
+                    clearGenreFilters()
+                  }}
                   className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold"
                 >
-                  Clear All
+                  Clear All Filters
                 </button>
               </div>
             </div>
