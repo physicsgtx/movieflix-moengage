@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Search, BarChart3, Shield } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { useState } from 'react'
 
