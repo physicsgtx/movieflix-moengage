@@ -143,7 +143,7 @@ public class MovieDataInitializer implements CommandLineRunner {
                 .imdbRating(parseRating(detail.getImdbRating()))
                 .imdbVotes(detail.getImdbVotes())
                 .type(detail.getType())
-                .dvd(detail.getDVD())
+                .dvd(detail.getDvd())
                 .boxOffice(detail.getBoxOffice())
                 .production(detail.getProduction())
                 .website(detail.getWebsite())
