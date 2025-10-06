@@ -185,7 +185,9 @@ export default function Movies() {
               Discover Movies
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Search and explore thousands of movies
+              {pagination.totalElements > 0 
+                ? `Browse ${pagination.totalElements} cached movies or search for new ones`
+                : 'Search for movies to start building your collection'}
             </p>
           </div>
           
@@ -217,9 +219,32 @@ export default function Movies() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for movies..."
+              placeholder="Search for movies by title (e.g., Matrix, Batman, Avengers) or leave empty to see all cached movies"
               className="w-full pl-12 pr-4 py-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-red-500 dark:bg-gray-800 dark:text-white text-lg"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                title="Clear search"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <span>💡 Quick searches:</span>
+            {['Matrix', 'Batman', 'Avengers', 'Star Wars', 'Lord of the Rings'].map((term) => (
+              <button
+                key={term}
+                onClick={() => setSearchQuery(term)}
+                className="px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-xs font-medium transition-colors"
+              >
+                {term}
+              </button>
+            ))}
           </div>
         </div>
 
