@@ -209,6 +209,7 @@ public class MovieService {
         return MovieResponse.fromEntity(movie);
     }
 
+    @CacheEvict(value = "movieStats", allEntries = true)
     private void fetchAndCacheMoviesFromApi(String query) {
         try {
             Optional<OmdbSearchResponse> searchResponse = omdbApiService.searchMovies(query, 1);
