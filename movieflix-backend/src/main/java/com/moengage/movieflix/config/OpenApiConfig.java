@@ -54,12 +54,12 @@ import org.springframework.context.annotation.Configuration;
         ),
         servers = {
                 @Server(
-                        description = "Local Development",
-                        url = "http://localhost:8080"
+                        description = "Production (Render)",
+                        url = "https://movieflix-moengage.onrender.com"
                 ),
                 @Server(
-                        description = "Production",
-                        url = "https://your-app.herokuapp.com"
+                        description = "Local Development",
+                        url = "http://localhost:8080"
                 )
         },
         security = @SecurityRequirement(name = "bearerAuth")
