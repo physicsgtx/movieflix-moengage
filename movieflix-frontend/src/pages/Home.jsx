@@ -1,146 +1,111 @@
 import { Link } from 'react-router-dom'
-import { Film, Search, BarChart3, Shield, Play, Info } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
+import { useState } from 'react'
 
 export default function Home() {
   const { token } = useAuthStore()
+  const [email, setEmail] = useState('')
 
-  // Popular movie posters for the collage
+  // Popular movie posters for the background
   const moviePosters = [
-    'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg', // The Matrix
-    'https://m.media-amazon.com/images/M/MV5BMDdmZGU3NDQtY2E5My00ZTliLWIzOTUtMTY4ZGI1YjdiNjk3XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg', // Titanic
-    'https://m.media-amazon.com/images/M/MV5BN2EyZjM3NzUtNWUzMi00MTgxLWI0NTctMzY4M2VlOTdjZWRiXkEyXkFqcGdeQXVyNDUzOTQ5MjY@._V1_SX300.jpg', // The Lord of the Rings
-    'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg', // The Dark Knight
-    'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg', // Inception
-    'https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_SX300.jpg', // Interstellar
-    'https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg', // Pulp Fiction
-    'https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg', // The Godfather
-    'https://m.media-amazon.com/images/M/MV5BMWMwMGQzZTItY2JlNC00OWZiLWIyMDctNDk2ZDQ2YjRjMWQ0XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg', // The Shawshank Redemption
-    'https://m.media-amazon.com/images/M/MV5BMTY4NzcwODg3Nl5BMl5BanBnXkFtZTcwNTEwOTMyMw@@._V1_SX300.jpg', // Avatar
-    'https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_SX300.jpg', // Avengers
-    'https://m.media-amazon.com/images/M/MV5BNzVlY2MwMjktM2E4OS00Y2Y3LWE3ZjctYzhkZGM3YzA1ZWM2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg', // Star Wars
+    'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BMDdmZGU3NDQtY2E5My00ZTliLWIzOTUtMTY4ZGI1YjdiNjk3XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BN2EyZjM3NzUtNWUzMi00MTgxLWI0NTctMzY4M2VlOTdjZWRiXkEyXkFqcGdeQXVyNDUzOTQ5MjY@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BMWMwMGQzZTItY2JlNC00OWZiLWIyMDctNDk2ZDQ2YjRjMWQ0XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BMTY4NzcwODg3Nl5BMl5BanBnXkFtZTcwNTEwOTMyMw@@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_SX300.jpg',
+    'https://m.media-amazon.com/images/M/MV5BNzVlY2MwMjktM2E4OS00Y2Y3LWE3ZjctYzhkZGM3YzA1ZWM2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg',
   ]
 
   return (
     <div className="min-h-screen">
-      {/* Netflix-Style Hero Section with Collage */}
-      <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
-        {/* Movie Collage Background */}
-        <div className="absolute inset-0 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 opacity-30 h-full">
-          {moviePosters.map((poster, index) => (
-            <div
-              key={index}
-              className="relative overflow-hidden group"
-              style={{
-                animationDelay: `${index * 0.1}s`,
-              }}
-            >
-              <img
-                src={poster}
-                alt={`Movie ${index + 1}`}
-                className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/300x450/1f2937/ffffff?text=Movie'
-                }}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
-
-        {/* Hero Content */}
-        <div className="relative min-h-[calc(100vh-4rem)] flex items-center py-12 sm:py-16">
-          <div className="container mx-auto px-4 md:px-8 lg:px-16">
-            <div className="max-w-3xl pb-20 sm:pb-24">
-              {/* Badge */}
-              <div className="inline-flex items-center space-x-2 bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mb-4 sm:mb-6 animate-fadeIn text-sm sm:text-base">
-                <Film className="w-5 h-5" />
-                <span className="font-semibold">Unlimited Movies</span>
+      {/* Netflix-Style Hero Section */}
+      <div className="relative min-h-screen overflow-hidden">
+        {/* Background Image Collage */}
+        <div className="absolute inset-0">
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-0 h-full opacity-40">
+            {moviePosters.map((poster, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={poster}
+                  alt={`Movie ${index + 1}`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/300x450/1f2937/ffffff?text=Movie'
+                  }}
+                />
               </div>
-
-              {/* Main Title */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 text-white leading-tight animate-slideUp">
-                Welcome to
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-pink-500 to-purple-500">
-                  MovieFlix
-                </span>
-              </h1>
-
-              {/* Subtitle */}
-              <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-8 text-gray-300 animate-slideUp" style={{ animationDelay: '0.2s' }}>
-                Discover thousands of movies. Stream your favorites. Explore new worlds.
-              </p>
-
-              <p className="text-base sm:text-lg mb-6 sm:mb-10 text-gray-400 max-w-2xl animate-slideUp" style={{ animationDelay: '0.3s' }}>
-                Advanced search with powerful filters, interactive analytics dashboard, and personalized recommendations.
-              </p>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 animate-slideUp" style={{ animationDelay: '0.4s' }}>
-                {token ? (
-                  <>
-                    <Link
-                      to="/movies"
-                      className="group flex items-center justify-center space-x-3 px-8 py-4 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all transform hover:scale-105 shadow-2xl"
-                    >
-                      <Play className="w-5 h-5 fill-current" />
-                      <span>Browse Movies</span>
-                    </Link>
-                    <Link
-                      to="/dashboard"
-                      className="group flex items-center justify-center space-x-3 px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white rounded-lg font-semibold hover:bg-white/20 transition-all transform hover:scale-105"
-                    >
-                      <Info className="w-5 h-5" />
-                      <span>View Dashboard</span>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/register"
-                      className="group flex items-center justify-center space-x-3 px-8 py-4 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all transform hover:scale-105 shadow-2xl"
-                    >
-                      <Play className="w-5 h-5 fill-current" />
-                      <span>Get Started</span>
-                    </Link>
-                    <Link
-                      to="/login"
-                      className="group flex items-center justify-center space-x-3 px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white rounded-lg font-semibold hover:bg-white/20 transition-all transform hover:scale-105"
-                    >
-                      <Info className="w-5 h-5" />
-                      <span>Sign In</span>
-                    </Link>
-                  </>
-                )}
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-8 sm:mt-12 animate-slideUp" style={{ animationDelay: '0.5s' }}>
-                <div className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-bold text-white">1000+</div>
-                  <div className="text-xs sm:text-sm text-gray-400 whitespace-nowrap">Movies</div>
-                </div>
-                <div className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-bold text-white">50+</div>
-                  <div className="text-xs sm:text-sm text-gray-400 whitespace-nowrap">Genres</div>
-                </div>
-                <div className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-bold text-white">24/7</div>
-                  <div className="text-xs sm:text-sm text-gray-400 whitespace-nowrap">Access</div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="hidden sm:block absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
+        {/* Dark Gradient Overlay - Stronger */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-black"></div>
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        {/* Hero Content - Netflix Style */}
+        <div className="relative min-h-screen flex items-center justify-center px-4">
+          <div className="max-w-4xl mx-auto text-center pt-20 pb-32">
+            {/* Main Heading */}
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+              Unlimited movies, TV shows and more
+            </h1>
+
+            {/* Subheading */}
+            <p className="text-lg sm:text-xl md:text-2xl text-white mb-4 sm:mb-6">
+              Starts at ₹149. Cancel at any time.
+            </p>
+
+            {/* Description */}
+            <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 sm:mb-10">
+              Ready to watch? Enter your email to create or restart your membership.
+            </p>
+
+            {/* Email CTA - Netflix Style */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 max-w-2xl mx-auto">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email address"
+                className="w-full sm:flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-black/50 border border-gray-500 rounded text-white placeholder-gray-400 focus:outline-none focus:border-white focus:ring-2 focus:ring-white text-base sm:text-lg"
+              />
+              {token ? (
+                <Link
+                  to="/movies"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-red-600 hover:bg-red-700 text-white rounded font-semibold text-lg sm:text-xl flex items-center justify-center space-x-2 transition-colors"
+                >
+                  <span>Browse Movies</span>
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </Link>
+              ) : (
+                <Link
+                  to="/register"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-red-600 hover:bg-red-700 text-white rounded font-semibold text-lg sm:text-xl flex items-center justify-center space-x-2 transition-colors whitespace-nowrap"
+                >
+                  <span>Get Started</span>
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </Link>
+              )}
+            </div>
+
+            {/* Already a member link */}
+            {!token && (
+              <div className="mt-6">
+                <Link
+                  to="/login"
+                  className="text-white hover:underline text-sm sm:text-base"
+                >
+                  Already a member? Sign In
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
