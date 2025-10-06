@@ -383,39 +383,22 @@ export default function Movies() {
                   
                   {/* Info Overlay - Shows on Hover */}
                   <div className="movie-card-info">
-                    <h3 className="font-bold text-sm sm:text-base text-white mb-1 sm:mb-2 line-clamp-2">
+                    <h3 className="font-bold text-sm sm:text-base lg:text-lg text-white mb-2 line-clamp-2">
                       {movie.title}
                     </h3>
                     
-                    <div className="flex items-center justify-between text-xs sm:text-sm text-gray-300 mb-2">
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span>{movie.year}</span>
-                      </div>
-                      {movie.runtime && (
-                        <span className="text-xs sm:text-sm">{movie.runtime} min</span>
-                      )}
-                    </div>
-                    
-                    {/* Genres */}
+                    {/* Genres - Only show 2 */}
                     {movie.genre && movie.genre.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {movie.genre.slice(0, 3).map((genre, idx) => (
+                      <div className="flex flex-wrap gap-1.5">
+                        {movie.genre.slice(0, 2).map((genre, idx) => (
                           <span
                             key={idx}
-                            className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 bg-red-600/80 text-white rounded backdrop-blur-sm"
+                            className="text-[10px] sm:text-xs px-2 py-1 bg-white/20 backdrop-blur-sm text-white rounded font-medium"
                           >
                             {genre}
                           </span>
                         ))}
                       </div>
-                    )}
-                    
-                    {/* Plot Preview */}
-                    {movie.plot && movie.plot !== 'N/A' && (
-                      <p className="text-xs text-gray-400 line-clamp-2 hidden sm:block">
-                        {movie.plot}
-                      </p>
                     )}
                   </div>
                 </div>
