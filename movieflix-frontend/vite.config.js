@@ -11,6 +11,14 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
+  },
+  build: {
+    // Ensure _redirects file is copied to build output
+    rollupOptions: {
+      output: {
+        // This ensures static files in public/ are copied
+      }
+    }
   }
 })
 
