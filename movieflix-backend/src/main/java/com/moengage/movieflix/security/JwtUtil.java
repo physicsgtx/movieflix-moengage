@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +24,6 @@ public class JwtUtil {
 
     @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
-
-    @PostConstruct
-    public void init() {
-        log.info("JWT secret configured: {}", secret != null ? "Present" : "Not configured");
-        log.info("JWT expiration: {} ms", jwtExpirationMs);
-    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
