@@ -1,6 +1,6 @@
-# 🚀 MovieFlix Deployment Guide
+# 🚀 MovieFlix Deployment Guide - Render
 
-Complete guide for deploying MovieFlix to production using Render (recommended) or other cloud platforms.
+Complete guide for deploying MovieFlix to production using Render cloud platform.
 
 ## 📋 Prerequisites
 
@@ -14,13 +14,9 @@ Complete guide for deploying MovieFlix to production using Render (recommended) 
 - **Backend**: https://movieflix-moengage.onrender.com
 - **Swagger UI**: https://movieflix-moengage.onrender.com/swagger-ui/index.html
 
-## 🎯 Deployment Options
+## 🎯 Render Deployment
 
-### Option 1: Render (Recommended)
-
-Render provides free hosting for both backend and frontend with automatic deployments from GitHub.
-
-#### Backend Deployment on Render
+### Backend Deployment on Render
 
 1. **Create New Web Service**
    - Go to [Render Dashboard](https://dashboard.render.com)
@@ -51,7 +47,7 @@ Render provides free hosting for both backend and frontend with automatic deploy
    DATABASE_URL=postgresql://username:password@host:port/database
    ```
 
-#### Frontend Deployment on Render
+### Frontend Deployment on Render
 
 1. **Create New Static Site**
    - Go to [Render Dashboard](https://dashboard.render.com)
@@ -72,41 +68,6 @@ Render provides free hosting for both backend and frontend with automatic deploy
    VITE_API_BASE_URL=https://movieflix-moengage.onrender.com
    ```
 
-### Option 2: Vercel (Frontend Only)
-
-For frontend deployment on Vercel:
-
-1. **Import Project**
-   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
-   - Click "Import Project"
-   - Connect your GitHub repository
-
-2. **Configure Settings**
-   ```
-   Framework Preset: Vite
-   Root Directory: movieflix-frontend
-   Build Command: npm run build
-   Output Directory: dist
-   ```
-
-3. **Environment Variables**
-   ```bash
-   VITE_API_BASE_URL=https://your-backend-url.com
-   ```
-
-### Option 3: Railway
-
-For full-stack deployment on Railway:
-
-1. **Deploy Backend**
-   - Connect GitHub repository
-   - Set root directory to `movieflix-backend`
-   - Add environment variables
-
-2. **Deploy Frontend**
-   - Create separate service
-   - Set root directory to `movieflix-frontend`
-   - Configure build settings
 
 ## 🔧 Environment Variables Reference
 
@@ -126,76 +87,6 @@ For full-stack deployment on Railway:
 |----------|-------------|----------|---------|
 | `VITE_API_BASE_URL` | Backend API URL | ✅ Yes | `https://movieflix-moengage.onrender.com` |
 
-## 🐳 Docker Deployment
-
-### Build and Run Locally
-
-```bash
-# Build backend image
-cd movieflix-backend
-docker build -t movieflix-backend .
-
-# Run backend container
-docker run -p 8080:8080 \
-  -e OMDB_API_KEY=your_api_key \
-  -e JWT_SECRET=your_jwt_secret \
-  movieflix-backend
-
-# Build frontend image
-cd movieflix-frontend
-docker build -t movieflix-frontend .
-
-# Run frontend container
-docker run -p 3000:3000 \
-  -e VITE_API_BASE_URL=http://localhost:8080 \
-  movieflix-frontend
-```
-
-### Docker Compose (Full Stack)
-
-Create `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-services:
-  backend:
-    build: ./movieflix-backend
-    ports:
-      - "8080:8080"
-    environment:
-      - OMDB_API_KEY=${OMDB_API_KEY}
-      - JWT_SECRET=${JWT_SECRET}
-    depends_on:
-      - postgres
-
-  frontend:
-    build: ./movieflix-frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - VITE_API_BASE_URL=http://localhost:8080
-    depends_on:
-      - backend
-
-  postgres:
-    image: postgres:15
-    environment:
-      - POSTGRES_DB=movieflix
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
-```
-
-Run with:
-```bash
-docker-compose up --build
-```
 
 ## 🔍 Troubleshooting
 
