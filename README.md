@@ -2,10 +2,18 @@
 
 A full-stack movie discovery application with Spring Boot backend and React frontend, featuring advanced search, JWT authentication, and interactive analytics.
 
+## 🌐 Live Application
+
+**🚀 [Try MovieFlix Now](https://movieflix-moengage-frontend.onrender.com)** - Live React Frontend
+
+**📚 [API Documentation](https://movieflix-moengage.onrender.com/swagger-ui/index.html)** - Interactive Swagger UI
+
+**🔧 [Backend API](https://movieflix-moengage.onrender.com)** - Spring Boot REST API
+
 ## 📁 Project Structure
 
 ```
-Moengage Assignment/
+movieflix-moengage/
 ├── movieflix-backend/          # Spring Boot REST API
 │   ├── src/
 │   ├── pom.xml
@@ -16,24 +24,29 @@ Moengage Assignment/
 │   ├── package.json
 │   └── README.md
 │
-├── docker-compose.yml          # Docker orchestration
 ├── README.md                   # This file
-└── Documentation files...
+├── API_EXAMPLES.md             # API usage examples
+├── GETTING_STARTED.md          # Quick start guide
+├── SWAGGER_GUIDE.md            # API documentation guide
+└── example.env                  # Environment variables template
 ```
 
 ## 🚀 Quick Start
 
-### Option 1: Run with Docker (Recommended)
+### Option 1: Try Live Application (Easiest)
 
-```bash
-# Build and start all services
-docker-compose up --build
+**🌐 [Access Live App](https://movieflix-moengage-frontend.onrender.com)** - No setup required!
 
-# Access the applications
-# Frontend: http://localhost:3000
-# Backend: http://localhost:8080
-# Swagger: http://localhost:8080/swagger-ui.html
-```
+**📚 [View API Docs](https://movieflix-moengage.onrender.com/swagger-ui/index.html)** - Interactive documentation
+
+#### 🎯 Live Demo Features
+- **30+ Popular Movies** pre-loaded on startup
+- **Multi-select Genre Filter** for advanced searching
+- **Netflix-style UI** with movie collage hero
+- **Interactive Analytics** dashboard with charts
+- **Admin Panel** (login: `admin` / `admin123`)
+- **CSV Export** functionality
+- **Real-time Search** with OMDb API integration
 
 ### Option 2: Run Locally
 
