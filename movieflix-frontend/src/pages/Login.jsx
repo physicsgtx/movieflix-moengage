@@ -26,7 +26,22 @@ export default function Login() {
       toast.success('Login successful!')
       navigate('/movies')
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed'
+      console.error('Login error:', error)
+      let message = 'Login failed'
+      
+      if (error.response?.data) {
+        // Handle different error response formats
+        if (error.response.data.message) {
+          message = error.response.data.message
+        } else if (error.response.data.error) {
+          message = error.response.data.error
+        } else if (typeof error.response.data === 'string') {
+          message = error.response.data
+        }
+      } else if (error.message) {
+        message = error.message
+      }
+      
       toast.error(message)
     } finally {
       setLoading(false)
