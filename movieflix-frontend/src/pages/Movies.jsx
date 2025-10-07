@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Search, Filter, Star, Calendar, Edit, Download } from 'lucide-react'
 import { movieAPI } from '../services/api'
 import { useAuthStore } from '../store/authStore'
@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 
 export default function Movies() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user } = useAuthStore()
   const [movies, setMovies] = useState([])
   const [loading, setLoading] = useState(false)
@@ -32,6 +33,25 @@ export default function Movies() {
   })
 
   const isAdmin = user?.role === 'ADMIN'
+
+  // Refresh movies when component mounts or when returning from navigation
+  useEffect(() => {
+    fetchMovies()
+  }, [location.key])
+
+  // Force refresh when returning from a deleted movie
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchMovies()
+      // Clear the refresh flag
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [location.state])
+
+  // Refresh movies when filters change
+  useEffect(() => {
+    fetchMovies()
+  }, [filters, searchQuery, selectedGenres])
 
   const fetchMovies = async () => {
     setLoading(true)
@@ -193,13 +213,6 @@ export default function Movies() {
       setDownloadingCSV(false)
     }
   }
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchMovies()
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [searchQuery, filters, selectedGenres])
 
   return (
     <div className="min-h-screen py-8">

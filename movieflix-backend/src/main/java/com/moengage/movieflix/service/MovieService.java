@@ -33,7 +33,8 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final OmdbApiService omdbApiService;
 
-    @Transactional
+    @Cacheable(value = "movies", key = "#request.hashCode()")
+    @Transactional(readOnly = true)
     public MovieListResponse searchMovies(MovieSearchRequest request) {
         // If search query provided, fetch from external API first
         if (request.getSearch() != null && !request.getSearch().isBlank()) {

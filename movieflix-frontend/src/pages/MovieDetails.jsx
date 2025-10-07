@@ -42,7 +42,8 @@ export default function MovieDetails() {
     try {
       await adminAPI.deleteMovie(id)
       toast.success('Movie deleted successfully!')
-      navigate('/movies')
+      // Navigate back with a refresh flag
+      navigate('/movies', { state: { refresh: true } })
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to delete movie')
       setIsDeleting(false)
