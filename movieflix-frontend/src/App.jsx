@@ -14,8 +14,14 @@ import keepAliveService from './services/keepAliveService'
 function App() {
   const { token } = useAuthStore()
 
+  // Debug logging
+  console.log('App component loaded')
+  console.log('Environment:', import.meta.env.MODE)
+  console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL)
+
   // Initialize keep-alive service on app start
   useEffect(() => {
+    console.log('App useEffect triggered')
     // Only start keep-alive in production (when deployed to Render)
     if (import.meta.env.PROD) {
       console.log('Starting keep-alive service for production deployment')
