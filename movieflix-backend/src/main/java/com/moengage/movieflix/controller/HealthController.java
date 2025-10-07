@@ -7,9 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +22,6 @@ import java.util.Map;
 @Slf4j
 @Tag(name = "Health Check", description = "Application health monitoring endpoints")
 public class HealthController {
-
-    @Autowired(required = false)
-    private HealthIndicator dbHealthIndicator;
 
     @GetMapping
     @Operation(
@@ -65,12 +59,11 @@ public class HealthController {
     @Operation(
             summary = "Detailed health check",
             description = """
-                    Comprehensive health check including database connectivity and system status.
+                    Comprehensive health check including system status and metrics.
                     This endpoint provides more detailed information about application health.
                     
                     **Includes:**
                     - Application status
-                    - Database connectivity
                     - System metrics
                     - Timestamp
                     """
@@ -90,19 +83,6 @@ public class HealthController {
         healthData.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         healthData.put("service", "MovieFlix Backend");
         healthData.put("version", "1.0.0");
-        
-        // Check database health if available
-        if (dbHealthIndicator != null) {
-            try {
-                Health dbHealth = dbHealthIndicator.health();
-                healthData.put("database", dbHealth.getStatus().getCode());
-            } catch (Exception e) {
-                log.warn("Database health check failed", e);
-                healthData.put("database", "DOWN");
-            }
-        } else {
-            healthData.put("database", "N/A");
-        }
         
         // Add system information
         Runtime runtime = Runtime.getRuntime();
