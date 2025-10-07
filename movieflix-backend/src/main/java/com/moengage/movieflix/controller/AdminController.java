@@ -3,7 +3,10 @@ package com.moengage.movieflix.controller;
 import com.moengage.movieflix.dto.ApiResponse;
 import com.moengage.movieflix.dto.MovieResponse;
 import com.moengage.movieflix.entity.Movie;
+import com.moengage.movieflix.entity.BlacklistedMovie;
+import com.moengage.movieflix.exception.ResourceNotFoundException;
 import com.moengage.movieflix.service.MovieService;
+import com.moengage.movieflix.repository.BlacklistedMovieRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final MovieService movieService;
+    private final BlacklistedMovieRepository blacklistedMovieRepository;
 
     @GetMapping("/test")
     @Operation(
@@ -37,6 +41,37 @@ public class AdminController {
     public ResponseEntity<ApiResponse<String>> testAdminAccess() {
         log.info("Admin test endpoint accessed");
         return ResponseEntity.ok(ApiResponse.success("Admin access confirmed", "OK"));
+    }
+
+    @GetMapping("/blacklist")
+    @Operation(
+            summary = "Get blacklisted movies",
+            description = "Retrieve list of movies that have been permanently blacklisted"
+    )
+    public ResponseEntity<ApiResponse<java.util.List<BlacklistedMovie>>> getBlacklistedMovies() {
+        log.info("Admin requesting blacklisted movies");
+        java.util.List<BlacklistedMovie> blacklistedMovies = blacklistedMovieRepository.findAll();
+        return ResponseEntity.ok(ApiResponse.success("Blacklisted movies retrieved", blacklistedMovies));
+    }
+
+    @DeleteMapping("/blacklist/{imdbId}")
+    @Operation(
+            summary = "Remove movie from blacklist",
+            description = "Remove a movie from the blacklist, allowing it to be cached again"
+    )
+    public ResponseEntity<ApiResponse<Void>> removeFromBlacklist(
+            @Parameter(description = "IMDb ID of the movie to remove from blacklist", example = "tt0133093", required = true)
+            @PathVariable String imdbId
+    ) {
+        log.info("Admin removing movie from blacklist: {}", imdbId);
+        
+        BlacklistedMovie blacklistedMovie = blacklistedMovieRepository.findByImdbId(imdbId)
+                .orElseThrow(() -> new ResourceNotFoundException("Movie not found in blacklist: " + imdbId));
+        
+        blacklistedMovieRepository.delete(blacklistedMovie);
+        log.info("Movie removed from blacklist: {}", imdbId);
+        
+        return ResponseEntity.ok(ApiResponse.success("Movie removed from blacklist", null));
     }
 
     @PutMapping("/{imdbId}")
@@ -80,11 +115,16 @@ public class AdminController {
 
     @DeleteMapping("/{imdbId}")
     @Operation(
-            summary = "Delete movie from cache (Admin only)",
+            summary = "Delete movie permanently (Admin only)",
             description = """
-                    Remove a movie from the cache. Only ADMIN role can perform this operation.
+                    Permanently remove a movie from the cache and blacklist it to prevent re-caching.
+                    Only ADMIN role can perform this operation.
                     
-                    The movie will be re-cached on next search/fetch.
+                    **What happens:**
+                    - Movie is removed from cache/database
+                    - Movie is added to blacklist
+                    - Movie will NOT be re-cached on future searches
+                    - Movie can be restored by removing from blacklist
                     
                     Login with admin credentials: username=admin, password=admin123
                     """

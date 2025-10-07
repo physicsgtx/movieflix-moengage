@@ -5,9 +5,11 @@ import com.moengage.movieflix.dto.omdb.OmdbMovieDetail;
 import com.moengage.movieflix.dto.omdb.OmdbSearchResponse;
 import com.moengage.movieflix.dto.omdb.OmdbSearchResult;
 import com.moengage.movieflix.entity.Movie;
+import com.moengage.movieflix.entity.BlacklistedMovie;
 import com.moengage.movieflix.exception.BadRequestException;
 import com.moengage.movieflix.exception.ResourceNotFoundException;
 import com.moengage.movieflix.repository.MovieRepository;
+import com.moengage.movieflix.repository.BlacklistedMovieRepository;
 import com.moengage.movieflix.specification.MovieSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final BlacklistedMovieRepository blacklistedMovieRepository;
     private final OmdbApiService omdbApiService;
 
     @Cacheable(value = "movies", key = "#request.hashCode()")
@@ -91,6 +94,12 @@ public class MovieService {
     @Cacheable(value = "movies", key = "#imdbId")
     @Transactional
     public MovieResponse getMovieById(String imdbId) {
+        // Check if movie is blacklisted
+        if (blacklistedMovieRepository.existsByImdbId(imdbId)) {
+            log.info("Movie {} is blacklisted, not returning", imdbId);
+            throw new ResourceNotFoundException("Movie not found with ID: " + imdbId);
+        }
+
         // Check cache first
         Optional<Movie> cachedMovie = movieRepository.findByImdbId(imdbId);
         
@@ -179,8 +188,19 @@ public class MovieService {
     public void deleteMovie(String imdbId) {
         Movie movie = movieRepository.findByImdbId(imdbId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found with ID: " + imdbId));
+        
+        // Remove from cache
         movieRepository.delete(movie);
-        log.info("Deleted movie from cache: {}", imdbId);
+        
+        // Add to blacklist to prevent re-caching
+        BlacklistedMovie blacklistedMovie = BlacklistedMovie.builder()
+                .imdbId(imdbId)
+                .reason("Deleted by admin")
+                .createdBy("admin")
+                .build();
+        blacklistedMovieRepository.save(blacklistedMovie);
+        
+        log.info("Deleted movie from cache and added to blacklist: {}", imdbId);
     }
 
     @CacheEvict(value = {"movies", "movieStats"}, allEntries = true)
@@ -217,8 +237,9 @@ public class MovieService {
             
             if (searchResponse.isPresent() && searchResponse.get().getSearch() != null) {
                 for (OmdbSearchResult result : searchResponse.get().getSearch()) {
-                    // Only fetch details if not already cached
-                    if (!movieRepository.existsByImdbId(result.getImdbID())) {
+                    // Only fetch details if not already cached and not blacklisted
+                    if (!movieRepository.existsByImdbId(result.getImdbID()) && 
+                        !blacklistedMovieRepository.existsByImdbId(result.getImdbID())) {
                         Optional<OmdbMovieDetail> detailOpt = omdbApiService.getMovieDetails(result.getImdbID());
                         detailOpt.ifPresent(detail -> {
                             Movie movie = convertOmdbDetailToMovie(detail);
@@ -228,6 +249,8 @@ public class MovieService {
                         
                         // Add small delay to avoid rate limiting
                         Thread.sleep(100);
+                    } else if (blacklistedMovieRepository.existsByImdbId(result.getImdbID())) {
+                        log.debug("Skipping blacklisted movie: {}", result.getImdbID());
                     }
                 }
             }
