@@ -120,17 +120,104 @@ Complete guide for deploying MovieFlix to production using Render cloud platform
 - Verify all dependencies are installed
 - Review build logs for specific errors
 
+#### 5. Render Free Tier Cold Starts
+**Problem**: 30-50 second delays when accessing the application after inactivity
+**Solution**:
+- Use the built-in keep-alive service (automatically enabled in production)
+- Set up external monitoring services (see [MONITORING_SETUP.md](./MONITORING_SETUP.md))
+- Run the provided keep-alive script: `npm run keep-alive`
+- Consider upgrading to Render's paid plans for production use
+
 ### Health Checks
 
-#### Backend Health Check
+#### Backend Health Check Endpoints
 ```bash
-curl https://your-backend-url.com/healthz
+# Ultra-lightweight ping (recommended for monitoring)
+curl https://movieflix-moengage.onrender.com/api/health/ping
+
+# Basic health check
+curl https://movieflix-moengage.onrender.com/api/health
+
+# Detailed health check with system info
+curl https://movieflix-moengage.onrender.com/api/health/detailed
 ```
 
 #### Frontend Health Check
 ```bash
-curl https://your-frontend-url.com
+curl https://movieflix-moengage-frontend.onrender.com
 ```
+
+#### Keep-Alive Service
+```bash
+# Run the built-in keep-alive script
+npm run keep-alive
+
+# Or run directly
+node keep-alive.js
+```
+
+## 🚀 Cold Start Mitigation Strategies
+
+### Understanding Render Free Tier Limitations
+Render's free tier instances spin down after 15 minutes of inactivity and take 30-50 seconds to spin back up. This can cause poor user experience.
+
+### Built-in Solutions
+
+#### 1. Automatic Keep-Alive Service
+The frontend automatically pings the backend every 10 minutes when deployed to production:
+- **Endpoint**: `/api/health/ping`
+- **Frequency**: 10 minutes
+- **Automatic**: Enabled in production builds only
+
+#### 2. Health Check Endpoints
+Multiple health check endpoints are available for monitoring:
+- `/api/health/ping` - Ultra-lightweight (returns "pong")
+- `/api/health` - Basic health with timestamp
+- `/api/health/detailed` - Comprehensive system info
+
+#### 3. External Keep-Alive Script
+Run the provided script locally or on a VPS:
+```bash
+# Install and run
+npm install
+npm run keep-alive
+
+# Configure with environment variables
+BACKEND_URL=https://movieflix-moengage.onrender.com \
+FRONTEND_URL=https://movieflix-moengage-frontend.onrender.com \
+PING_INTERVAL=10 \
+npm run keep-alive
+```
+
+### External Monitoring Services
+Set up external monitoring services for additional reliability:
+
+#### Recommended Services:
+1. **UptimeRobot** (Free: 50 monitors, 5-min intervals)
+2. **Pingdom** (Free: 1 monitor, 1-min intervals)  
+3. **StatusCake** (Free: 10 monitors, 5-min intervals)
+4. **Freshping** (Free: 10 monitors, 1-min intervals)
+
+#### Setup Instructions:
+See [MONITORING_SETUP.md](./MONITORING_SETUP.md) for detailed configuration.
+
+### Best Practices
+
+1. **Combine Strategies**: Use both built-in keep-alive and external monitoring
+2. **Monitor Both Services**: Ping both frontend and backend
+3. **Appropriate Intervals**: 5-10 minute intervals work well
+4. **Production Considerations**: Consider upgrading to paid plans for production
+
+### Quick Setup Checklist
+
+- [ ] Deploy application to Render
+- [ ] Verify health endpoints are working
+- [ ] Set up external monitoring service
+- [ ] Run keep-alive script locally or on VPS
+- [ ] Test cold start recovery time
+- [ ] Monitor logs for spin-down patterns
+
+---
 
 ## 📊 Performance Optimization
 

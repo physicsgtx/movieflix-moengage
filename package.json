@@ -1,0 +1,21 @@
+{
+  "name": "movieflix-keep-alive",
+  "version": "1.0.0",
+  "description": "Keep-alive service for MovieFlix Render deployment",
+  "main": "keep-alive.js",
+  "scripts": {
+    "keep-alive": "node keep-alive.js",
+    "start": "node keep-alive.js"
+  },
+  "keywords": [
+    "render",
+    "keep-alive",
+    "monitoring",
+    "uptime"
+  ],
+  "author": "MovieFlix Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

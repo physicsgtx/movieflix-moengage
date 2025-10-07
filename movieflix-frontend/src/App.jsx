@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { useEffect } from 'react'
 import { useAuthStore } from './store/authStore'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
@@ -8,9 +9,26 @@ import Register from './pages/Register'
 import Movies from './pages/Movies'
 import MovieDetails from './pages/MovieDetails'
 import Dashboard from './pages/Dashboard'
+import keepAliveService from './services/keepAliveService'
 
 function App() {
   const { token } = useAuthStore()
+
+  // Initialize keep-alive service on app start
+  useEffect(() => {
+    // Only start keep-alive in production (when deployed to Render)
+    if (import.meta.env.PROD) {
+      console.log('Starting keep-alive service for production deployment')
+      keepAliveService.start()
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (import.meta.env.PROD) {
+        keepAliveService.stop()
+      }
+    }
+  }, [])
 
   const ProtectedRoute = ({ children }) => {
     return token ? children : <Navigate to="/login" />
