@@ -38,13 +38,20 @@ export default function MovieDetails() {
       return
     }
 
+    console.log('Delete request - User:', user)
+    console.log('Delete request - Is Admin:', isAdmin)
+    console.log('Delete request - Movie ID:', id)
+
     setIsDeleting(true)
     try {
-      await adminAPI.deleteMovie(id)
+      const response = await adminAPI.deleteMovie(id)
+      console.log('Delete response:', response)
       toast.success('Movie deleted successfully!')
       // Navigate back with a refresh flag
       navigate('/movies', { state: { refresh: true } })
     } catch (error) {
+      console.error('Delete error:', error)
+      console.error('Delete error response:', error.response)
       toast.error(error.response?.data?.message || 'Failed to delete movie')
       setIsDeleting(false)
     }

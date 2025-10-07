@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,16 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final MovieService movieService;
+
+    @GetMapping("/test")
+    @Operation(
+            summary = "Test admin access",
+            description = "Simple endpoint to test if admin authentication is working"
+    )
+    public ResponseEntity<ApiResponse<String>> testAdminAccess() {
+        log.info("Admin test endpoint accessed");
+        return ResponseEntity.ok(ApiResponse.success("Admin access confirmed", "OK"));
+    }
 
     @PutMapping("/{imdbId}")
     @Operation(
@@ -96,9 +107,17 @@ public class AdminController {
             @Parameter(description = "IMDb ID of the movie to delete", example = "tt0133093", required = true)
             @PathVariable String imdbId
     ) {
-        log.info("Admin delete movie: {}", imdbId);
-        movieService.deleteMovie(imdbId);
-        return ResponseEntity.ok(ApiResponse.success("Movie deleted successfully", null));
+        log.info("Admin delete movie request received: {}", imdbId);
+        log.info("Current user authentication: {}", SecurityContextHolder.getContext().getAuthentication());
+        
+        try {
+            movieService.deleteMovie(imdbId);
+            log.info("Movie deleted successfully: {}", imdbId);
+            return ResponseEntity.ok(ApiResponse.success("Movie deleted successfully", null));
+        } catch (Exception e) {
+            log.error("Error deleting movie {}: {}", imdbId, e.getMessage(), e);
+            throw e;
+        }
     }
 }
 

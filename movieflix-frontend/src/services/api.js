@@ -52,7 +52,18 @@ export const movieAPI = {
 // Admin APIs
 export const adminAPI = {
   updateMovie: (id, data) => api.put(`/api/admin/movies/${id}`, data),
-  deleteMovie: (id) => api.delete(`/api/admin/movies/${id}`),
+  deleteMovie: async (id) => {
+    console.log('AdminAPI deleteMovie called with ID:', id)
+    console.log('Current token:', useAuthStore.getState().token)
+    try {
+      const response = await api.delete(`/api/admin/movies/${id}`)
+      console.log('AdminAPI deleteMovie response:', response)
+      return response
+    } catch (error) {
+      console.error('AdminAPI deleteMovie error:', error)
+      throw error
+    }
+  },
 }
 
 export default api
