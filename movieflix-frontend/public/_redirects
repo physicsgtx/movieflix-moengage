@@ -5,5 +5,9 @@
 # Handle all routes by serving index.html
 /*    /index.html   200
 
-# Alternative format for Render
-/*    /index.html  200
+# Specific routes
+/login    /index.html   200
+/register    /index.html   200
+/movies    /index.html   200
+/movie/*    /index.html   200
+/dashboard    /index.html   200
