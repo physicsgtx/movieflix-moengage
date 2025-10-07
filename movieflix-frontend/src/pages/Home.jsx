@@ -1,35 +1,11 @@
 import { Link } from 'react-router-dom'
 import { ChevronRight, Search, BarChart3, Shield } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function Home() {
   const { token } = useAuthStore()
   const [email, setEmail] = useState('')
-  const [apiStatus, setApiStatus] = useState('checking')
-
-  // Check API connectivity
-  useEffect(() => {
-    const checkApiStatus = async () => {
-      try {
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
-        console.log('API Base URL:', API_BASE_URL)
-        
-        // Try to ping the health endpoint
-        const response = await fetch(`${API_BASE_URL}/api/health/ping`)
-        if (response.ok) {
-          setApiStatus('connected')
-        } else {
-          setApiStatus('error')
-        }
-      } catch (error) {
-        console.error('API connection error:', error)
-        setApiStatus('error')
-      }
-    }
-    
-    checkApiStatus()
-  }, [])
 
   // Popular movie posters for the background
   const moviePosters = [
@@ -131,22 +107,6 @@ export default function Home() {
               </div>
             )}
 
-            {/* Debug API Status */}
-            <div className="mt-8 p-4 bg-black/30 rounded-lg">
-              <p className="text-white text-sm">
-                API Status: 
-                <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                  apiStatus === 'connected' ? 'bg-green-600' : 
-                  apiStatus === 'error' ? 'bg-red-600' : 'bg-yellow-600'
-                }`}>
-                  {apiStatus === 'checking' ? 'Checking...' : 
-                   apiStatus === 'connected' ? 'Connected' : 'Error'}
-                </span>
-              </p>
-              <p className="text-white/70 text-xs mt-2">
-                Backend: {import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}
-              </p>
-            </div>
           </div>
         </div>
       </div>
