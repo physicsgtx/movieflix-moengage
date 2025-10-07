@@ -117,7 +117,7 @@ npm run dev
 - [Frontend README](./movieflix-frontend/README.md) - Frontend setup and features
 - [API Examples](./API_EXAMPLES.md) - cURL examples for all endpoints
 - [Swagger Guide](./SWAGGER_GUIDE.md) - How to use Swagger UI
-- [Deployment Guide](./DEPLOYMENT.md) - Production deployment instructions
+- [Deployment Guide](./DEPLOYMENT_GUIDE.md) - Complete production deployment instructions
 
 ## 🌐 API Endpoints
 
