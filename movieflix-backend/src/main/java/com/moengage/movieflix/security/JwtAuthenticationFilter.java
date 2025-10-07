@@ -30,23 +30,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         try {
             String jwt = parseJwt(request);
+            log.debug("JWT token extracted: {}", jwt != null ? "Present" : "Not present");
             
             if (jwt != null) {
                 String username = jwtUtil.extractUsername(jwt);
+                log.debug("Username extracted from JWT: {}", username);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    log.debug("User details loaded: {}", userDetails.getUsername());
 
                     if (jwtUtil.validateToken(jwt, userDetails)) {
+                        log.debug("JWT token is valid for user: {}", username);
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
+                        log.debug("Authentication set in SecurityContext for user: {}", username);
+                    } else {
+                        log.warn("JWT token validation failed for user: {}", username);
                     }
                 }
+            } else {
+                log.debug("No JWT token found in request headers");
             }
         } catch (Exception e) {
-            log.error("Cannot set user authentication: {}", e.getMessage());
+            log.error("Cannot set user authentication: {}", e.getMessage(), e);
         }
 
         filterChain.doFilter(request, response);
@@ -54,11 +63,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
+        log.debug("Authorization header: {}", headerAuth);
 
         if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
+            String token = headerAuth.substring(7);
+            log.debug("JWT token extracted from header: {}", token.substring(0, Math.min(20, token.length())) + "...");
+            return token;
         }
 
+        log.debug("No valid Authorization header found");
         return null;
     }
 }

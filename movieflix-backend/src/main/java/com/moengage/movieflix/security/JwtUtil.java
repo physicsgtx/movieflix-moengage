@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,12 @@ public class JwtUtil {
 
     @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
+
+    @PostConstruct
+    public void init() {
+        log.info("JWT secret configured: {}", secret != null ? "Present" : "Not configured");
+        log.info("JWT expiration: {} ms", jwtExpirationMs);
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -51,8 +58,15 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String username = extractUsername(token);
+            boolean isValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+            log.debug("Token validation for user {}: {}", username, isValid);
+            return isValid;
+        } catch (Exception e) {
+            log.error("Error validating token: {}", e.getMessage());
+            return false;
+        }
     }
 
     public String generateToken(String username) {

@@ -29,7 +29,7 @@ server:
 # Application Properties
 app:
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
     expiration-ms: 86400000  # 24 hours
     refresh-expiration-ms: 604800000  # 7 days
 
