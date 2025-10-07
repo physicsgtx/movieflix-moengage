@@ -205,6 +205,14 @@ public class MovieService {
 
     @CacheEvict(value = {"movies", "movieStats"}, allEntries = true)
     @Transactional
+    public void clearAllMovies() {
+        log.info("Clearing all movies from cache");
+        movieRepository.deleteAll();
+        log.info("All movies cleared from cache");
+    }
+
+    @CacheEvict(value = {"movies", "movieStats"}, allEntries = true)
+    @Transactional
     public MovieResponse updateMovie(String imdbId, Movie updatedMovie) {
         Movie movie = movieRepository.findByImdbId(imdbId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found with ID: " + imdbId));
@@ -264,6 +272,11 @@ public class MovieService {
     }
 
     private Movie convertOmdbDetailToMovie(OmdbMovieDetail omdbMovie) {
+        log.info("Converting OMDb movie: {} - Genre: '{}'", omdbMovie.getTitle(), omdbMovie.getGenre());
+        
+        List<String> parsedGenres = parseCommaSeparated(omdbMovie.getGenre());
+        log.info("Parsed genres for {}: {}", omdbMovie.getTitle(), parsedGenres);
+        
         return Movie.builder()
                 .imdbId(omdbMovie.getImdbID())
                 .title(omdbMovie.getTitle())
@@ -271,7 +284,7 @@ public class MovieService {
                 .plot(omdbMovie.getPlot())
                 .director(omdbMovie.getDirector())
                 .actors(parseCommaSeparated(omdbMovie.getActors()))
-                .genre(parseCommaSeparated(omdbMovie.getGenre()))
+                .genre(parsedGenres)
                 .rated(omdbMovie.getRated())
                 .runtime(parseRuntime(omdbMovie.getRuntime()))
                 .language(omdbMovie.getLanguage())

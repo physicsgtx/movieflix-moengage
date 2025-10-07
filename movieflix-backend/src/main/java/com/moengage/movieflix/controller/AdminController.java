@@ -74,6 +74,21 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.success("Movie removed from blacklist", null));
     }
 
+    @PostMapping("/clear-cache")
+    @Operation(
+            summary = "Clear movie cache",
+            description = "Clear all cached movies and force re-fetch from OMDb API"
+    )
+    public ResponseEntity<ApiResponse<Void>> clearCache() {
+        log.info("Admin clearing movie cache");
+        
+        // Clear all movies from database
+        movieService.clearAllMovies();
+        
+        log.info("Movie cache cleared successfully");
+        return ResponseEntity.ok(ApiResponse.success("Movie cache cleared successfully", null));
+    }
+
     @PutMapping("/{imdbId}")
     @Operation(
             summary = "Update movie in cache (Admin only)",
